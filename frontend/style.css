@@ -1,0 +1,1352 @@
+/* ==================================================
+   GENERAL
+================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    font-family:
+        system-ui,
+        -apple-system,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    color: #1c1c1a;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f5f4ef 0%,
+            #faf9f5 50%,
+            #f4f3ee 100%
+        );
+
+    position: relative;
+    overflow-x: hidden;
+}
+
+
+/* ==================================================
+   FLAG BACKGROUND
+================================================== */
+
+.flag-background {
+    position: fixed;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+
+    z-index: 0;
+
+    pointer-events: none;
+}
+
+.flag-tile {
+    position: absolute;
+
+    display: block;
+
+    overflow: hidden;
+
+    border-radius: 7px;
+
+    background: white;
+
+    opacity: 0.24;
+
+    box-shadow:
+        0 7px 18px rgba(0, 0, 0, 0.13);
+
+    pointer-events: auto;
+
+    transform:
+        rotate(var(--rotation))
+        scale(1);
+
+    transition:
+        transform 0.32s ease,
+        opacity 0.22s ease,
+        box-shadow 0.32s ease;
+}
+
+.flag-tile:hover {
+    transform:
+        rotate(var(--rotation))
+        scale(1.1);
+
+    opacity: 0.62;
+
+    box-shadow:
+        0 13px 30px rgba(0, 0, 0, 0.22);
+
+    transition-delay:
+        2s,
+        0s,
+        2s;
+
+    z-index: 2;
+}
+
+.flag-tile img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    pointer-events: none;
+    user-select: none;
+}
+
+
+/* ==================================================
+   STICKY NOTES
+================================================== */
+
+.sticky-notes-layer {
+    position: fixed;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 4;
+
+    pointer-events: none;
+
+    overflow: hidden;
+}
+
+.sticky-note {
+    position: absolute;
+
+    width: 190px;
+    min-height: 150px;
+
+    padding: 15px 15px 28px;
+
+    border-radius: 5px;
+
+    box-shadow:
+        0 8px 22px rgba(0, 0, 0, 0.17);
+
+    pointer-events: auto;
+
+    cursor: grab;
+
+    user-select: none;
+    touch-action: none;
+
+    transform:
+        rotate(var(--note-rotation, 0deg));
+
+    overflow: hidden;
+}
+
+.sticky-note:active {
+    cursor: grabbing;
+}
+
+.sticky-note.dragging {
+    box-shadow:
+        0 14px 32px rgba(0, 0, 0, 0.26);
+}
+
+.sticky-note::after {
+    content: "";
+
+    position: absolute;
+    right: 0;
+    bottom: 0;
+
+    width: 0;
+    height: 0;
+
+    border-left:
+        18px solid transparent;
+
+    border-top:
+        18px solid rgba(0, 0, 0, 0.10);
+}
+
+.note-yellow {
+    background: #f7df6c;
+}
+
+.note-pink {
+    background: #f4aeb3;
+}
+
+.note-blue {
+    background: #aeb8ff;
+}
+
+.note-mint {
+    background: #9fe4dc;
+}
+
+.note-lilac {
+    background: #d9c0f1;
+}
+
+.note-peach {
+    background: #f6ad7e;
+}
+
+.sticky-note-category {
+    margin-bottom: 7px;
+
+    font-size: 0.76rem;
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.04em;
+
+    color: rgba(28, 28, 26, 0.60);
+}
+
+.sticky-note-question {
+    margin-bottom: 10px;
+
+    font-size: 0.90rem;
+    line-height: 1.22;
+    font-weight: 650;
+}
+
+.sticky-note-answer {
+    font-size: 1.22rem;
+    line-height: 1.28;
+    font-weight: 750;
+
+    overflow-wrap: anywhere;
+}
+
+.sticky-note-number {
+    position: absolute;
+
+    left: 15px;
+    bottom: 7px;
+
+    font-size: 0.70rem;
+    font-weight: 700;
+
+    color: rgba(28, 28, 26, 0.43);
+}
+
+
+/* ==================================================
+   MAIN CONTENT
+================================================== */
+
+.container {
+    max-width: 650px;
+
+    margin: 28px auto 50px;
+
+    padding: 20px;
+
+    position: relative;
+
+    z-index: 5;
+}
+
+
+/* ==================================================
+   HEADER
+================================================== */
+
+.cg-header {
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    margin-top: -10px;
+    margin-bottom: 27px;
+}
+
+.cg-lockup {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 18px;
+}
+
+.cg-lockup svg {
+    width: 66px;
+    height: auto;
+
+    flex-shrink: 0;
+}
+
+.cg-title-area {
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+}
+
+.cg-name {
+    font-size: 46px;
+
+    font-weight: 400;
+
+    letter-spacing: -1px;
+
+    line-height: 1;
+}
+
+.cg-name b {
+    font-weight: 600;
+}
+
+.cg-tag {
+    margin-top: 7px;
+
+    color: #6b6a64;
+
+    font-size: 15px;
+}
+
+
+/* ==================================================
+   CARDS
+================================================== */
+
+.card {
+    padding: 30px;
+
+    background:
+        rgba(255, 255, 255, 0.93);
+
+    border:
+        1px solid rgba(229, 227, 220, 0.9);
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 8px 30px rgba(0, 0, 0, 0.09);
+
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+}
+
+.card h2 {
+    margin-top: 0;
+}
+
+
+/* ==================================================
+   FORMS
+================================================== */
+
+form {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+label {
+    margin-top: 10px;
+
+    font-weight: 600;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+
+    padding: 14px;
+
+    border:
+        1px solid #d5d3cc;
+
+    border-radius: 10px;
+
+    background: white;
+
+    color: #1c1c1a;
+
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+textarea {
+    resize: vertical;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline:
+        2px solid #D85A30;
+
+    outline-offset: 1px;
+
+    border-color: transparent;
+}
+
+
+/* ==================================================
+   BUTTONS
+================================================== */
+
+button {
+    width: 100%;
+
+    margin-top: 15px;
+
+    padding: 15px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: #1c1c1a;
+
+    color: white;
+
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.15s ease,
+        opacity 0.2s ease;
+}
+
+button:hover:not(:disabled) {
+    background: #D85A30;
+
+    transform:
+        translateY(-1px);
+}
+
+button:disabled {
+    opacity: 0.55;
+
+    cursor: not-allowed;
+}
+
+button.secondary {
+    background: #6b6a64;
+}
+
+button.secondary:hover:not(:disabled) {
+    background: #4d4c48;
+}
+
+
+/* ==================================================
+   DIFFICULTY SELECTOR
+================================================== */
+
+.difficulty-section {
+    margin: 12px 0 10px;
+
+    padding: 18px;
+
+    background: #f3f2ed;
+
+    border:
+        1px solid #dedcd5;
+
+    border-radius: 16px;
+}
+
+.difficulty-section h3 {
+    margin:
+        0
+        0
+        13px;
+
+    font-size: 1.05rem;
+}
+
+.difficulty-buttons {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 12px;
+}
+
+button.difficulty-button {
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    width: 100%;
+    min-height: 96px;
+
+    margin: 0;
+
+    padding: 15px;
+
+    text-align: left;
+
+    background: white;
+
+    color: #1c1c1a;
+
+    border:
+        2px solid #d2d0c9;
+
+    border-radius: 14px;
+
+    box-shadow: none;
+
+    transform: none;
+}
+
+button.difficulty-button:hover:not(:disabled) {
+    background: #faf7f2;
+
+    color: #1c1c1a;
+
+    border-color: #D85A30;
+
+    transform:
+        translateY(-2px);
+}
+
+button.difficulty-button.selected {
+    background: #fff1e9;
+
+    border-color: #D85A30;
+
+    box-shadow:
+        0 0 0 3px rgba(216, 90, 48, 0.11);
+}
+
+.difficulty-icon {
+    flex-shrink: 0;
+
+    font-size: 2rem;
+
+    line-height: 1;
+}
+
+.difficulty-text {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+    min-width: 0;
+}
+
+.difficulty-text strong {
+    font-size: 1.05rem;
+}
+
+.difficulty-text small {
+    color: #6b6a64;
+
+    font-size: 0.78rem;
+    line-height: 1.3;
+}
+
+.difficulty-check {
+    display: none;
+
+    position: absolute;
+
+    top: 8px;
+    right: 9px;
+
+    width: 22px;
+    height: 22px;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #D85A30;
+
+    color: white;
+
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+
+button.difficulty-button.selected
+.difficulty-check {
+    display: flex;
+}
+
+.selected-mode-description {
+    margin:
+        12px
+        2px
+        0;
+
+    color: #6b6a64;
+
+    font-size: 0.84rem;
+    font-weight: 600;
+}
+
+
+/* ==================================================
+   EASY MODE MAP
+================================================== */
+
+.easy-map-panel {
+    position: fixed;
+
+    left: 12px;
+    bottom: 12px;
+
+    /*
+    Sized to use the free space to the left of the
+    centred game card without sitting underneath it
+    on a typical laptop/desktop screen.
+    */
+    width: clamp(
+        340px,
+        calc(50vw - 342px),
+        610px
+    );
+
+    padding: 12px;
+
+    background:
+        rgba(255, 255, 255, 0.97);
+
+    border:
+        1px solid #d7d5ce;
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 12px 32px rgba(0, 0, 0, 0.16);
+
+    z-index: 3;
+
+    transition:
+        width 0.22s ease,
+        left 0.22s ease,
+        bottom 0.22s ease,
+        transform 0.22s ease,
+        box-shadow 0.22s ease;
+}
+
+/*
+Expanded map becomes a temporary map-focus view.
+The normal game remains underneath and returns immediately
+when the player presses Shrink.
+*/
+.easy-map-panel.expanded {
+    left: 50%;
+    bottom: 22px;
+
+    width: min(
+        1040px,
+        calc(100vw - 44px)
+    );
+
+    transform: translateX(-50%);
+
+    z-index: 20;
+
+    box-shadow:
+        0 22px 55px rgba(0, 0, 0, 0.28);
+}
+
+body.map-focus-mode::before {
+    content: "";
+
+    position: fixed;
+    inset: 0;
+
+    background: rgba(28, 28, 26, 0.35);
+
+    z-index: 19;
+
+    pointer-events: none;
+}
+
+.sticky-notes-layer {
+    transition: opacity 0.15s ease;
+}
+
+.sticky-notes-layer.map-expanded-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.easy-map-panel[hidden] {
+    display: none;
+}
+
+.easy-map-header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-bottom: 8px;
+}
+
+.easy-map-header > div {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 2px;
+
+    min-width: 0;
+}
+
+.easy-map-header strong {
+    font-size: 0.98rem;
+}
+
+.easy-map-header span {
+    color: #6b6a64;
+
+    font-size: 0.70rem;
+}
+
+.easy-map-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.map-reset-button,
+.map-size-button {
+    width: auto;
+
+    min-width: 60px;
+
+    margin: 0;
+
+    padding: 7px 10px;
+
+    font-size: 0.72rem;
+}
+
+.map-size-button {
+    min-width: 82px;
+
+    background: #D85A30;
+}
+
+.map-size-button:hover:not(:disabled) {
+    background: #bf4c28;
+}
+
+.easy-world-map {
+    position: relative;
+
+    width: 100%;
+
+    aspect-ratio: 1.76 / 1;
+
+    overflow: hidden;
+
+    background: #edf3f5;
+
+    border:
+        1px solid #d9d8d2;
+
+    border-radius: 10px;
+}
+
+.easy-world-map svg {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+}
+
+.easy-map-panel.expanded .easy-world-map {
+    max-height: calc(100vh - 175px);
+}
+
+.easy-map-panel.expanded .map-country-label {
+    font-size: 10.5px;
+}
+
+.easy-map-panel.expanded .map-country-label.external {
+    font-size: 9.75px;
+}
+
+/*
+Orange = still possible.
+*/
+.map-country {
+    fill: #D85A30;
+
+    stroke: rgba(255, 255, 255, 0.92);
+
+    stroke-width: 0.65;
+
+    vector-effect: non-scaling-stroke;
+
+    cursor: pointer;
+
+    transition:
+        fill 0.12s ease,
+        opacity 0.12s ease;
+}
+
+.map-country:hover {
+    fill: #c94e28;
+}
+
+/*
+White = eliminated.
+*/
+.map-country.eliminated {
+    fill: #ffffff;
+}
+
+.map-country.eliminated:hover {
+    fill: #f2f0e9;
+}
+
+.map-country:focus {
+    outline: none;
+
+    stroke: #1c1c1a;
+
+    stroke-width: 1.5;
+}
+
+/*
+Three-letter ISO labels.
+Large countries keep their code inside.
+Small/crowded countries use an external code with a
+thin leader line.  JS calculates positions so labels
+never overlap each other.
+*/
+.map-country-label {
+    fill: #1c1c1a;
+
+    stroke: rgba(255, 255, 255, 0.95);
+
+    stroke-width: 1.8px;
+
+    paint-order: stroke;
+
+    stroke-linejoin: round;
+
+    font-family:
+        system-ui,
+        -apple-system,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    font-size: 9.25px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.05px;
+
+    text-anchor: middle;
+
+    dominant-baseline: central;
+
+    pointer-events: none;
+
+    user-select: none;
+}
+
+.map-country-label.external {
+    font-size: 8.75px;
+}
+
+.map-label-leader {
+    stroke: rgba(28, 28, 26, 0.58);
+
+    stroke-width: 0.7;
+
+    vector-effect: non-scaling-stroke;
+
+    pointer-events: none;
+}
+
+.easy-map-footer {
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 8px;
+
+    margin-top: 7px;
+
+    color: #6b6a64;
+
+    font-size: 0.70rem;
+}
+
+.easy-map-footer strong {
+    color: #D85A30;
+}
+
+.map-loading,
+.map-error {
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    margin: 0;
+
+    color: #6b6a64;
+
+    text-align: center;
+
+    font-size: 0.78rem;
+}
+
+@media (max-width: 1360px) {
+
+    .easy-map-panel {
+        width: 330px;
+    }
+}
+
+@media (max-width: 850px) {
+
+    .easy-map-panel {
+        width: min(
+            500px,
+            calc(100vw - 24px)
+        );
+
+        left: 12px;
+        bottom: 12px;
+    }
+
+    .map-country-label {
+        font-size: 9px;
+    }
+
+    .map-country-label.external {
+        font-size: 8.5px;
+    }
+}
+
+@media (max-width: 550px) {
+
+    .easy-map-panel {
+        width: calc(100vw - 20px);
+
+        left: 10px;
+        bottom: 10px;
+    }
+}
+
+
+/* ==================================================
+   PLAYER PROFILE / HELP
+================================================== */
+
+.hint {
+    color: #6b6a64;
+
+    font-size: 0.9rem;
+}
+
+.player-preview {
+    margin-top: 5px;
+
+    padding:
+        12px
+        15px;
+
+    background: #f3f2ed;
+
+    border-radius: 10px;
+
+    font-size: 0.95rem;
+}
+
+.how-to-play {
+    margin-top: 30px;
+
+    padding-top: 20px;
+
+    border-top:
+        1px solid #e5e3dc;
+}
+
+.how-to-play h3 {
+    margin-bottom: 15px;
+}
+
+.how-step {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin:
+        12px
+        0;
+}
+
+.how-step span {
+    flex-shrink: 0;
+
+    font-size: 1.3rem;
+}
+
+.how-step p {
+    margin: 0;
+
+    color: #5b5a55;
+}
+
+
+/* ==================================================
+   LEADERBOARD
+================================================== */
+
+.leaderboard-card {
+    margin-top: 25px;
+}
+
+.leaderboard-subtitle {
+    color: #6b6a64;
+}
+
+.leaderboard-row {
+    display: grid;
+
+    grid-template-columns:
+        50px
+        1fr
+        auto;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding:
+        12px
+        5px;
+
+    border-bottom:
+        1px solid #e5e3dc;
+}
+
+.leaderboard-row:last-child {
+    border-bottom: none;
+}
+
+.leaderboard-position {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.leaderboard-name,
+.leaderboard-trophies {
+    font-weight: 600;
+}
+
+
+/* ==================================================
+   GAME
+================================================== */
+
+.game-meta {
+    display: flex;
+
+    justify-content: space-between;
+
+    flex-wrap: wrap;
+
+    gap: 15px;
+
+    margin-bottom: 20px;
+
+    color: #6b6a64;
+
+    font-size: 0.9rem;
+}
+
+.game-status {
+    padding:
+        12px
+        15px;
+
+    background: #f3f2ed;
+
+    border-radius: 10px;
+
+    text-align: center;
+
+    font-weight: 600;
+}
+
+.guess-summary {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    padding:
+        16px
+        18px;
+
+    margin:
+        20px
+        0;
+
+    background: #f3f2ed;
+
+    border:
+        1px solid #e5e3dc;
+
+    border-radius: 14px;
+}
+
+.guess-summary-label {
+    color: #6b6a64;
+
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.guess-summary-number {
+    color: #D85A30;
+
+    font-size: 2.3rem;
+    font-weight: 700;
+
+    line-height: 1;
+}
+
+#question-options {
+    margin-top: 15px;
+}
+
+.question-button {
+    width: 100%;
+
+    margin:
+        7px
+        0;
+
+    text-align: left;
+
+    background: white;
+
+    color: #1c1c1a;
+
+    border:
+        2px solid #d5d3cc;
+}
+
+.question-button:hover:not(:disabled) {
+    background: #faf9f5;
+
+    color: #1c1c1a;
+
+    border-color: #D85A30;
+}
+
+.question-button:disabled {
+    background: #f3f2ed;
+
+    color: #6b6a64;
+}
+
+.big-question {
+    padding: 18px;
+
+    background: #f3f2ed;
+
+    border-radius: 12px;
+
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+#guess-panel {
+    margin-top: 25px;
+
+    padding-top: 20px;
+
+    border-top:
+        1px solid #d5d3cc;
+}
+
+#game-over-panel {
+    margin-top: 25px;
+
+    padding: 25px;
+
+    background: #f3f2ed;
+
+    border-radius: 15px;
+
+    text-align: center;
+}
+
+.return-message {
+    margin-top: 15px;
+
+    color: #6b6a64;
+
+    font-size: 0.9rem;
+}
+
+.error {
+    color: #c13e27;
+
+    text-align: center;
+
+    font-weight: 600;
+}
+
+
+/* ==================================================
+   RESPONSIVE
+================================================== */
+
+@media (max-width: 850px) {
+
+    .sticky-note {
+        width: 160px;
+
+        min-height: 130px;
+    }
+}
+
+@media (max-width: 550px) {
+
+    .container {
+        margin:
+            15px
+            auto;
+
+        padding: 12px;
+    }
+
+    .cg-header {
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
+
+    .cg-lockup {
+        gap: 11px;
+    }
+
+    .cg-lockup svg {
+        width: 49px;
+    }
+
+    .cg-name {
+        font-size: 31px;
+
+        letter-spacing: -0.5px;
+    }
+
+    .cg-tag {
+        margin-top: 4px;
+
+        font-size: 11px;
+    }
+
+    .card {
+        padding: 20px;
+    }
+
+    .difficulty-buttons {
+        grid-template-columns: 1fr;
+    }
+
+    button.difficulty-button {
+        min-height: 78px;
+    }
+
+    .game-meta {
+        flex-direction: column;
+
+        gap: 6px;
+    }
+
+    .guess-summary-number {
+        font-size: 2rem;
+    }
+
+    .sticky-note {
+        width: 135px;
+
+        min-height: 112px;
+    }
+
+    .sticky-note-answer {
+        font-size: 1rem;
+    }
+}
+
+
+/* ==================================================
+   MAP V6 RESPONSIVE FOCUS MODE
+================================================== */
+
+@media (max-width: 850px) {
+    .easy-map-panel.expanded {
+        width: calc(100vw - 20px);
+        left: 50%;
+        bottom: 10px;
+    }
+
+    .easy-map-actions {
+        gap: 4px;
+    }
+
+    .map-reset-button,
+    .map-size-button {
+        padding: 7px 8px;
+        min-width: auto;
+    }
+}

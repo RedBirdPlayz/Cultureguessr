@@ -1,0 +1,44 @@
+{
+  "conventions": [
+    "What side of the road do you drive on?",
+    "Do your light switches flip up or down for on?",
+    "Do you write the day or the month first?",
+    "Is your ground floor called 1 or 0?",
+    "Is tipping customary?"
+  ],
+
+  "food": [
+    "What's a normal breakfast for you?",
+    "What is a famous food from your country?",
+    "What does a normal school lunch look like?"
+  ],
+
+  "geography": [
+    "What side of the hemisphere are you in?",
+    "What's a pleasant temperature in your country?",
+    "How common is air conditioning in houses?",
+    "Is it a popular tourist destination?",
+    "Is your country more known for its seas and rivers, or its mountains?"
+  ],
+
+  "culture": [
+    "What is a popular sport?",
+    "What is an urban myth?",
+    "What is a cultural rule everyone knows but no one explains?",
+    "How friendly are locals?"
+  ],
+
+  "daily_life": [
+    "Are motorcycles commonly used?",
+    "At what age do people usually move out?",
+    "Do shops and restaurants stay open till late?",
+    "Rate your public transport.",
+    "How long is considered a normal commute?"
+  ],
+
+  "numbers": [
+    "How big would you say the population is?",
+    "What's the average income, in USD?",
+    "What's the average height of a man from your country?"
+  ]
+}
