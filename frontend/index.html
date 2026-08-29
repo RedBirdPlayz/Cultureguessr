@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CultureGuessr</title>
+
+    <!-- Version query forces the browser to load the newest CSS -->
+    <link rel="stylesheet" href="/static/style.css?v=map-v6">
+</head>
+
+<body>
+
+<div id="flag-background" class="flag-background" aria-hidden="true"></div>
+
+<div id="sticky-notes-layer" class="sticky-notes-layer" hidden></div>
+
+<!-- EASY MODE MAP: only shown after an Easy Mode match begins -->
+<aside id="easy-map-panel" class="easy-map-panel" hidden aria-label="Easy mode elimination map">
+    <div class="easy-map-header">
+        <div>
+            <strong>🗺️ Elimination Map</strong>
+            <span>Orange = possible • White = eliminated</span>
+        </div>
+
+        <div class="easy-map-actions">
+            <button
+                id="toggle-map-size"
+                class="map-size-button"
+                type="button"
+                aria-expanded="false"
+                title="Enlarge map"
+            >
+                ⛶ Enlarge
+            </button>
+
+            <button id="reset-map" class="map-reset-button" type="button">
+                Reset
+            </button>
+        </div>
+    </div>
+
+    <div id="easy-world-map" class="easy-world-map" aria-label="Clickable world map">
+        <p class="map-loading">Loading world map...</p>
+    </div>
+
+    <div class="easy-map-footer">
+        <span>
+            Eliminated:
+            <strong id="eliminated-count">0</strong>
+        </span>
+        <span>Click again to restore</span>
+    </div>
+</aside>
+
+
+<main class="container">
+
+    <!-- HEADER -->
+    <header class="cg-header">
+        <div class="cg-lockup">
+            <svg width="62" height="71" viewBox="0 0 62 71" aria-hidden="true">
+                <g fill="#1c1c1a">
+                    <rect x="18" y="0" width="8" height="8" rx="1.5"/>
+                    <rect x="27" y="0" width="8" height="8" rx="1.5"/>
+                    <rect x="36" y="0" width="8" height="8" rx="1.5"/>
+
+                    <rect x="9" y="9" width="8" height="8" rx="1.5"/>
+                    <rect x="18" y="9" width="8" height="8" rx="1.5"/>
+                    <rect x="27" y="9" width="8" height="8" rx="1.5"/>
+                    <rect x="36" y="9" width="8" height="8" rx="1.5"/>
+                    <rect x="45" y="9" width="8" height="8" rx="1.5"/>
+
+                    <rect x="0" y="18" width="8" height="8" rx="1.5"/>
+                    <rect x="9" y="18" width="8" height="8" rx="1.5"/>
+                    <rect x="18" y="18" width="8" height="8" rx="1.5"/>
+                    <rect x="27" y="18" width="8" height="8" rx="1.5"/>
+                    <rect x="36" y="18" width="8" height="8" rx="1.5"/>
+                    <rect x="45" y="18" width="8" height="8" rx="1.5"/>
+                    <rect x="54" y="18" width="8" height="8" rx="1.5"/>
+
+                    <rect x="0" y="27" width="8" height="8" rx="1.5"/>
+                    <rect x="9" y="27" width="8" height="8" rx="1.5"/>
+                    <rect x="18" y="27" width="8" height="8" rx="1.5"/>
+                    <rect x="36" y="27" width="8" height="8" rx="1.5"/>
+                    <rect x="45" y="27" width="8" height="8" rx="1.5"/>
+                    <rect x="54" y="27" width="8" height="8" rx="1.5"/>
+
+                    <rect x="0" y="36" width="8" height="8" rx="1.5"/>
+                    <rect x="9" y="36" width="8" height="8" rx="1.5"/>
+                    <rect x="18" y="36" width="8" height="8" rx="1.5"/>
+                    <rect x="27" y="36" width="8" height="8" rx="1.5"/>
+                    <rect x="36" y="36" width="8" height="8" rx="1.5"/>
+                    <rect x="45" y="36" width="8" height="8" rx="1.5"/>
+                    <rect x="54" y="36" width="8" height="8" rx="1.5"/>
+
+                    <rect x="9" y="45" width="8" height="8" rx="1.5"/>
+                    <rect x="18" y="45" width="8" height="8" rx="1.5"/>
+                    <rect x="27" y="45" width="8" height="8" rx="1.5"/>
+                    <rect x="36" y="45" width="8" height="8" rx="1.5"/>
+                    <rect x="45" y="45" width="8" height="8" rx="1.5"/>
+
+                    <rect x="18" y="54" width="8" height="8" rx="1.5"/>
+                    <rect x="27" y="54" width="8" height="8" rx="1.5"/>
+                    <rect x="36" y="54" width="8" height="8" rx="1.5"/>
+
+                    <rect x="27" y="63" width="8" height="8" rx="1.5"/>
+                </g>
+
+                <rect x="27" y="27" width="8" height="8" rx="1.5" fill="#D85A30"/>
+            </svg>
+
+            <div class="cg-title-area">
+                <div class="cg-name">Culture<b>Guessr</b></div>
+                <div class="cg-tag">Twenty-five questions. One country.</div>
+            </div>
+        </div>
+    </header>
+
+
+    <!-- JOIN SCREEN -->
+    <section id="join-screen" class="card">
+        <h2>Enter CultureGuessr</h2>
+
+        <p>
+            Meet another player, ask cultural questions,
+            and race to guess their culture first.
+        </p>
+
+        <form id="join-form">
+
+            <!-- MODE SELECTOR IS STATIC HTML SO IT ALWAYS APPEARS -->
+            <div class="difficulty-section">
+                <h3>Choose Difficulty</h3>
+
+                <input id="game-mode-value" type="hidden" value="normal">
+
+                <div class="difficulty-buttons">
+                    <button
+                        id="normal-mode-button"
+                        class="difficulty-button selected"
+                        type="button"
+                        data-mode="normal"
+                        aria-pressed="true"
+                    >
+                        <span class="difficulty-icon">🎯</span>
+
+                        <span class="difficulty-text">
+                            <strong>Normal</strong>
+                            <small>Original CultureGuessr</small>
+                        </span>
+
+                        <span class="difficulty-check">✓</span>
+                    </button>
+
+                    <button
+                        id="easy-mode-button"
+                        class="difficulty-button"
+                        type="button"
+                        data-mode="easy"
+                        aria-pressed="false"
+                    >
+                        <span class="difficulty-icon">🗺️</span>
+
+                        <span class="difficulty-text">
+                            <strong>Easy</strong>
+                            <small>Includes elimination map</small>
+                        </span>
+
+                        <span class="difficulty-check">✓</span>
+                    </button>
+                </div>
+
+                <p id="selected-mode-description" class="selected-mode-description">
+                    🎯 Normal Mode selected
+                </p>
+            </div>
+
+
+            <label for="player-name">Your player name</label>
+
+            <input
+                id="player-name"
+                type="text"
+                maxlength="30"
+                placeholder="e.g. Alex"
+                required
+            >
+
+            <div id="player-profile-preview" class="player-preview" hidden>
+                🏆 <strong id="player-trophy-count">0</strong> trophies
+            </div>
+
+
+            <label for="player-culture">Culture you're representing</label>
+
+            <select id="player-culture" required>
+                <option value="">Select your culture</option>
+            </select>
+
+            <p class="hint">
+                🔒 Your culture stays secret from your opponent.
+            </p>
+
+            <button id="find-match-button" type="submit">
+                Find a Match
+            </button>
+        </form>
+
+
+        <div class="how-to-play">
+            <h3>How to play</h3>
+
+            <div class="how-step">
+                <span>1️⃣</span>
+                <p>Choose Normal or Easy, then get matched with someone using the same mode.</p>
+            </div>
+
+            <div class="how-step">
+                <span>2️⃣</span>
+                <p>Ask questions about food, daily life, geography and culture.</p>
+            </div>
+
+            <div class="how-step">
+                <span>3️⃣</span>
+                <p>Use the clues to guess their culture.</p>
+            </div>
+
+            <div class="how-step">
+                <span>🗺️</span>
+                <p>Easy Mode adds a clickable world map for eliminating countries.</p>
+            </div>
+
+            <div class="how-step">
+                <span>⏱️</span>
+                <p>You have 60 seconds to act when it is your turn.</p>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- LEADERBOARD -->
+    <section id="leaderboard-section" class="card leaderboard-card">
+        <h2>🏆 Top Cultural Detectives</h2>
+
+        <p class="leaderboard-subtitle">
+            Top 10 CultureGuessr players.
+        </p>
+
+        <div id="leaderboard-list">
+            Loading leaderboard...
+        </div>
+    </section>
+
+
+    <!-- WAITING -->
+    <section id="status-screen" class="card" hidden>
+        <h2 id="status-title">Finding another player...</h2>
+        <p id="status-text">Waiting for another cultural detective 🌎</p>
+    </section>
+
+
+    <!-- GAME -->
+    <section id="game-screen" class="card" hidden>
+
+        <div class="game-meta">
+            <span>
+                Room:
+                <strong id="current-game-id"></strong>
+            </span>
+
+            <span>
+                Opponent:
+                <strong id="current-opponent"></strong>
+            </span>
+
+            <span>
+                Round:
+                <strong id="round-number">1</strong>
+            </span>
+
+            <span>
+                Mode:
+                <strong id="current-mode">Normal</strong>
+            </span>
+        </div>
+
+
+        <h2>CultureGuessr</h2>
+
+
+        <div class="guess-summary">
+            <span class="guess-summary-label">
+                Guesses Remaining
+            </span>
+
+            <strong id="guesses-remaining-display" class="guess-summary-number">
+                3
+            </strong>
+        </div>
+
+
+        <p id="game-status" class="game-status">
+            Preparing game...
+        </p>
+
+
+        <!-- YOUR TURN -->
+        <div id="turn-controls" hidden>
+            <h3>🔎 Your turn</h3>
+
+            <p>
+                Ask a question or make a guess.
+            </p>
+
+            <label for="category-select">
+                Question category
+            </label>
+
+            <select id="category-select"></select>
+
+            <button id="show-questions" type="button">
+                Show Questions
+            </button>
+
+            <div id="question-options"></div>
+
+            <button id="open-guess" class="secondary" type="button">
+                🎯 Make a Guess
+                (<span id="guess-count">3</span> left)
+            </button>
+        </div>
+
+
+        <!-- ANSWER -->
+        <div id="answer-panel" hidden>
+            <h3>💬 Your opponent asked:</h3>
+
+            <p id="incoming-question" class="big-question"></p>
+
+            <label for="answer-input">Your answer</label>
+
+            <textarea
+                id="answer-input"
+                rows="4"
+                maxlength="300"
+                placeholder="Type your answer..."
+            ></textarea>
+
+            <button id="send-answer" type="button">
+                Send Answer
+            </button>
+        </div>
+
+
+        <!-- GUESS -->
+        <div id="guess-panel" hidden>
+            <h3>🎯 Guess their culture</h3>
+
+            <p>
+                Be careful — you only have three guesses.
+            </p>
+
+            <select id="culture-guess-input">
+                <option value="">Choose a culture</option>
+            </select>
+
+            <button id="submit-guess" type="button">
+                Lock In Guess
+            </button>
+
+            <button id="cancel-guess" class="secondary" type="button">
+                Cancel
+            </button>
+        </div>
+
+
+        <!-- GAME OVER -->
+        <div id="game-over-panel" hidden>
+            <h2 id="game-over-title"></h2>
+            <p id="game-over-message"></p>
+
+            <p class="return-message">
+                Returning to the main menu in 5 seconds...
+            </p>
+        </div>
+    </section>
+
+
+    <p id="error-message" class="error"></p>
+
+</main>
+
+
+<!-- Map libraries -->
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+
+<!-- Version query forces the browser to load the newest JS -->
+<script src="/static/app.js?v=map-v6"></script>
+
+</body>
+</html>
